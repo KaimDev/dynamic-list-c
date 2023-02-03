@@ -30,8 +30,8 @@ void ListAdd(ListPointer list, int32_t value)
     }
     else if (list->size <= list->capacity)
     {
-        list->capacity *= 2;
-        list->data = (int32_t*)realloc(list->data, list->capacity);
+        list->capacity += 16;
+        list->data = (int32_t*)realloc(list->data, list->capacity * sizeof(int32_t));
         ++list->size;
     }
 
