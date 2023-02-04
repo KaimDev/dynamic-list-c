@@ -24,7 +24,7 @@ ListPointer ListNew()
 
 void ListAdd(ListPointer list, int32_t value)
 {
-    if (list->size <= list->capacity)
+    if (list->size == list->capacity)
     {
         list->capacity *= 2;
         int32_t* temp = (int32_t*)realloc(list->data, list->capacity * sizeof(int32_t));
@@ -42,7 +42,7 @@ void ListAdd(ListPointer list, int32_t value)
 
 void ListSet(ListPointer list, int32_t index, int32_t value)
 {
-    if (!list->size > index)
+    if (list->size < index || index < 0)
     {
         return;
     }
@@ -52,7 +52,7 @@ void ListSet(ListPointer list, int32_t index, int32_t value)
 
 int32_t* ListGet(ListPointer list, int32_t index)
 {
-    if (!list->size > index)
+    if (list->size < index || index < 0)
     {
         return NULL;
     }
@@ -67,9 +67,14 @@ size_t ListSize(ListPointer list)
 
 void ListRemoveAt(ListPointer list, int32_t index)
 {
-    if (!list->size > index)
+    if (list->size < index || index <= 0)
     {
         return;
+    }
+
+    if (list->size == 1)
+    {
+        list->data[0] = 0;
     }
 
     for (size_t i = index ; i < list->size ; ++i)
@@ -85,7 +90,16 @@ void ListRemoveAt(ListPointer list, int32_t index)
 
 void ListRemove(ListPointer list, int32_t value)
 {
-    for (size_t i = 0 ; i <= list->size ; ++i)
+    if (list->size == 1)
+    {
+        if (list->data[0] == value)
+        {
+            list->data[0] = 0;
+            return;
+        }
+    }
+
+    for (size_t i = 0 ; i < list->size ; ++i)
     {
         if (list->data[i] == value)
         {
@@ -105,6 +119,15 @@ void ListRemove(ListPointer list, int32_t value)
 
 void ListRemoveIf(ListPointer list, int32_t value)
 {
+    if (list->size == 1)
+    {
+        if (list->data[0] == value)
+        {
+            list->data[0] = 0;
+            return;
+        }
+    }
+
     for (size_t i = 0 ; i <= list->size ; ++i)
     {
         if (list->data[i] == value)
